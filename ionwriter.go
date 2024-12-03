@@ -11,26 +11,21 @@ type ionWriter struct {
 }
 
 // Write writes the contents of p to all writeTargets
-// if any writeTarget returns an error, the error is returned with the number of bytes written
-// if no writeTarget returns an error, this function returns no err = nil and n = 0
-func (w *ionWriter) Write(p []byte) (n int, err error) {
+// This function returns no error nor the number of bytes written
+func (w *ionWriter) Write(p []byte) (int, error) {
 	for i, target := range w.writeTargets {
-
 		if target == nil {
-			ionInternalLogger.Error("Expected writer to be not nil")
+			ionInternalLogger.Error(fmt.Sprintf("Expected the %v° target to be not nil", i+1))
 			continue
 		}
 
-		// It will save the latest failure error while continue writing to other writeTargets
-		// latter, it will return the latest failure error
-		_n, _err := target.Write(p)
-		if _err != nil {
-			n = _n
-			err = _err
+		_, err := target.Write(p)
+		if err != nil {
 			ionInternalLogger.Error(fmt.Sprintf("Failed to write to in the %v° target, error: %v", i+1, err))
 		}
 	}
-	return
+
+	return 0, nil
 }
 
 func DefaultOutput() io.Writer {

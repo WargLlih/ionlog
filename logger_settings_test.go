@@ -1,7 +1,6 @@
 package ionlog
 
 import (
-	"context"
 	"io"
 	"log/slog"
 	"os"
@@ -14,9 +13,8 @@ func TestSetLogAttributes(t *testing.T) {
 		logger.logHandler = slog.New(logger.createDefaultLogHandler())
 
 		w := []io.Writer{Stdout(), os.Stderr}
-		ctx := context.Background()
 
-		SetLogAttributes(WithTargets(ctx, w...))
+		SetLogAttributes(WithTargets(w...))
 
 		for _, writer := range logger.writerHandler.writeTargets {
 			if writer == nil {

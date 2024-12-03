@@ -17,9 +17,8 @@ func SetLogAttributes(fns ...customAttrs) {
 }
 
 // WithTargets sets the write targets for the logger, every log will be written to these targets.
-func WithTargets(ctx context.Context, w ...io.Writer) customAttrs {
+func WithTargets(w ...io.Writer) customAttrs {
 	return func(i *ionLogger) {
-		i.ctx = ctx
 		i.writerHandler.writeTargets = w
 	}
 }
