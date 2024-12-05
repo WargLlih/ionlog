@@ -1,4 +1,4 @@
-package ionlog
+package ioncore
 
 import (
 	"log/slog"
@@ -18,7 +18,7 @@ func function_data(skip int) (pkg, function, file string, line int) {
 	return
 }
 
-func getRecordInformation() []any{
+func GetRecordInformation() []any {
 	pkg, function, file, line := function_data(3)
 	recInf := make([]any, 4)
 	recInf[0] = slog.String("package", pkg)

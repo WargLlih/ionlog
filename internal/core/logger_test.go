@@ -1,4 +1,4 @@
-package ionlog
+package ioncore
 
 import (
 	"testing"
@@ -14,7 +14,7 @@ func TestNewLogger(t *testing.T) {
 
 func TestCreateDefaultLogHandler(t *testing.T) {
 	_logger := newLogger()
-	handler := _logger.createDefaultLogHandler()
+	handler := _logger.CreateDefaultLogHandler()
 
 	if handler == nil {
 		t.Errorf("Expected handler to be not nil")
