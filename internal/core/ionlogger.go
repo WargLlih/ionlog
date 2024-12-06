@@ -8,6 +8,7 @@ import (
 	"sync"
 	"time"
 
+	ionlogfile "github.com/IonicHealthUsa/ionlog/internal/logfile"
 	ionservice "github.com/IonicHealthUsa/ionlog/internal/service"
 )
 
@@ -17,8 +18,16 @@ type controlFlow struct {
 	wg     sync.WaitGroup
 }
 
+type autoRotateInfo struct {
+	logRotateService ionlogfile.ILogFileRotation
+	rotationPeriod   ionlogfile.PeriodicRotation
+	folder           string
+}
+
 type ionLogger struct {
 	controlFlow
+	autoRotateInfo
+
 	logEngine     *slog.Logger
 	writerHandler ionWriter
 	reports       chan ionReport
@@ -27,6 +36,9 @@ type ionLogger struct {
 
 type IIonLogger interface {
 	ionservice.IService
+
+	SetRotationPeriod(period ionlogfile.PeriodicRotation)
+	SetFolder(folder string)
 
 	LogEngine() *slog.Logger
 	SetLogEngine(handler *slog.Logger)
@@ -54,6 +66,7 @@ func newLogger() *ionLogger {
 	l.ctx, l.cancel = context.WithCancel(context.Background())
 	l.reports = make(chan ionReport)
 	l.logEngine = slog.New(l.CreateDefaultLogHandler())
+	l.rotationPeriod = ionlogfile.NoAutoRotate
 
 	return l
 }
@@ -63,8 +76,12 @@ func Logger() IIonLogger {
 	return logger
 }
 
+func (i *ionLogger) SetRotationPeriod(period ionlogfile.PeriodicRotation) {
+	i.rotationPeriod = period
 }
 
+func (i *ionLogger) SetFolder(folder string) {
+	i.folder = folder
 }
 
 func (i *ionLogger) LogEngine() *slog.Logger {
@@ -102,13 +119,10 @@ func (i *ionLogger) SendReport(r ionReport) {
 }
 
 func (i *ionLogger) handleIonReports() {
-	i.wg.Add(1)
-	defer i.wg.Done()
-
 	for {
 		select {
 		case <-i.ctx.Done():
-			slog.Debug("context done, flushing logs")
+			slog.Debug("Logger stopped by context")
 			return
 
 		case r := <-i.reports:
