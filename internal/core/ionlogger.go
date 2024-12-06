@@ -7,6 +7,8 @@ import (
 	"log/slog"
 	"sync"
 	"time"
+
+	ionservice "github.com/IonicHealthUsa/ionlog/internal/service"
 )
 
 type controlFlow struct {
@@ -20,16 +22,18 @@ type ionLogger struct {
 	logEngine     *slog.Logger
 	writerHandler ionWriter
 	reports       chan ionReport
+	serviceStatus ionservice.ServiceStatus
 }
 
 type IIonLogger interface {
+	ionservice.IService
+
 	LogEngine() *slog.Logger
 	SetLogEngine(handler *slog.Logger)
 
 	Targets() []io.Writer
 	SetTargets(targets ...io.Writer)
 
-	Stop()
 	CreateDefaultLogHandler() slog.Handler
 	SendReport(r ionReport)
 }
@@ -51,13 +55,16 @@ func newLogger() *ionLogger {
 	l.reports = make(chan ionReport)
 	l.logEngine = slog.New(l.CreateDefaultLogHandler())
 
-	go l.handleIonReports()
 	return l
 }
 
 // Logger returns the logger instance
 func Logger() IIonLogger {
 	return logger
+}
+
+}
+
 }
 
 func (i *ionLogger) LogEngine() *slog.Logger {
@@ -74,13 +81,6 @@ func (i *ionLogger) Targets() []io.Writer {
 
 func (i *ionLogger) SetTargets(targets ...io.Writer) {
 	i.writerHandler.SetTargets(targets...)
-}
-
-// Stop stops the logger by canceling the context and waiting for the worker to finish
-func (i *ionLogger) Stop() {
-	slog.Debug("Logger stopped (sync triggered)")
-	i.cancel()
-	i.wg.Wait()
 }
 
 // CreateDefaultLogHandler creates a default log handler for the logger
