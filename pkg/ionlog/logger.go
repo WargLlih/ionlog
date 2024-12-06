@@ -7,6 +7,10 @@ import (
 	ioncore "github.com/IonicHealthUsa/ionlog/internal/core"
 )
 
+func Start() {
+	ioncore.Logger().Start()
+}
+
 func Stop() {
 	ioncore.Logger().Stop()
 }

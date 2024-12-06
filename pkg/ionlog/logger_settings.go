@@ -5,19 +5,15 @@ import (
 	"log/slog"
 
 	ioncore "github.com/IonicHealthUsa/ionlog/internal/core"
+	ionlogfile "github.com/IonicHealthUsa/ionlog/internal/logfile"
 )
 
 type customAttrs func(i ioncore.IIonLogger)
 
-type periodicRotation int
-
 const (
-	// Daily rotation
-	Daily periodicRotation = iota
-	// Weekly rotation
-	Weekly
-	// Monthly rotation
-	Monthly
+	Daily   = ionlogfile.Daily
+	Weekly  = ionlogfile.Weekly
+	Monthly = ionlogfile.Monthly
 )
 
 // SetLogAttributes sets the log SetLogAttributes
@@ -50,8 +46,10 @@ func WithStaicFields(attrs map[string]string) customAttrs {
 	}
 }
 
-func WithLogFileRotation() customAttrs {
+// WithLogFileRotation sets the log file rotation period and the folder where the log files will be stored.
+func WithLogFileRotation(folder string, period ionlogfile.PeriodicRotation) customAttrs {
 	return func(i ioncore.IIonLogger) {
-
+		i.SetRotationPeriod(period)
+		i.SetFolder(folder)
 	}
 }
