@@ -1,3 +1,5 @@
+// Package recordhistory provides a way to keep track of the log history.
+// It allows custom logging modes, such as logOnce and logOnChange.
 package recordhistory
 
 import (
