@@ -36,4 +36,3 @@ func (w *ionWriter) Write(p []byte) (int, error) {
 func (w *ionWriter) SetTargets(targets ...io.Writer) {
 	w.writeTargets = targets
 }
-

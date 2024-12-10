@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func function_data(skip int) (pkg, function, file string, line int) {
+func functionData(skip int) (pkg, function, file string, line int) {
 	pc, file, line, _ := runtime.Caller(skip)
 	data := runtime.FuncForPC(pc).Name()
 	pkg = data[:strings.LastIndexByte(data, '.')]
@@ -19,7 +19,7 @@ func function_data(skip int) (pkg, function, file string, line int) {
 }
 
 func GetRecordInformation() []any {
-	pkg, function, file, line := function_data(3)
+	pkg, function, file, line := functionData(3)
 	recInf := make([]any, 4)
 	recInf[0] = slog.String("package", pkg)
 	recInf[1] = slog.String("function", function)

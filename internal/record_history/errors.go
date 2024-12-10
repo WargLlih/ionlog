@@ -3,5 +3,5 @@ package recordhistory
 import "errors"
 
 var (
-	ErrRecordIDCollision = errors.New("Record ID collision detected")
+	ErrRecordIDCollision = errors.New("record ID collision detected")
 )
