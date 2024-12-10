@@ -47,19 +47,21 @@ func TestAddRecord(t *testing.T) {
 }
 
 func TestRemoveRecord(t *testing.T) {
-	id := uint64(1)
-	r := NewRecordHistory()
-	r.AddRecord(id, "test", logOnce)
+	t.Run("Simple Remove", func(t *testing.T) {
+		id := uint64(1)
+		r := NewRecordHistory()
+		r.AddRecord(id, "test", logOnce)
 
-	if r.GetRecord(id) == nil {
-		t.Errorf("Test preset failed")
-	}
+		if r.GetRecord(id) == nil {
+			t.Errorf("Test preset failed")
+		}
 
-	r.RemoveRecord(id)
+		r.RemoveRecord(id)
 
-	if r.GetRecord(id) != nil {
-		t.Errorf("RemoveRecord() failed")
-	}
+		if r.GetRecord(id) != nil {
+			t.Errorf("RemoveRecord() failed")
+		}
+	})
 }
 
 func TestGetRecord(t *testing.T) {
