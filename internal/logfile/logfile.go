@@ -1,3 +1,5 @@
+// Package ionlogfile provides a log file rotation service.
+// It is responsible for managing the log file, creating new log files, and rotating the log files.
 package ionlogfile
 
 import (
@@ -20,7 +22,7 @@ const logFilePattern = "logfile-%s.log"
 
 type logFileRotation struct {
 	filesystem
-	logFile       *os.File
+	logFile       io.WriteCloser
 	writeMutex    sync.Mutex
 	ctx           context.Context
 	cancel        context.CancelFunc
