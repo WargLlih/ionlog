@@ -1,3 +1,5 @@
+// Package ioncore provides the core functionalities of the logger.
+// It is responsible for handling the logger service, the log writer, and the log engine.
 package ioncore
 
 import (
