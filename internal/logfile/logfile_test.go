@@ -9,7 +9,7 @@ func TestNewLogFileRotation(t *testing.T) {
 	t.Run("New Log File Rotation", func(t *testing.T) {
 		lfr := NewLogFileRotation("folder", Daily)
 		if lfr == nil {
-			t.Errorf("NewLogFileRotation() failed")
+			t.Fatalf("NewLogFileRotation() failed")
 		}
 
 		if lfr.filesystem.stat == nil {
@@ -64,7 +64,7 @@ func TestLogFileRotation_Write(t *testing.T) {
 	t.Run("Write No File", func(t *testing.T) {
 		lfr := NewLogFileRotation("folder", Daily)
 		if lfr == nil {
-			t.Errorf("NewLogFileRotation() failed")
+			t.Fatalf("NewLogFileRotation() failed")
 		}
 
 		lfr.logFile = nil
@@ -78,7 +78,7 @@ func TestLogFileRotation_Write(t *testing.T) {
 	t.Run("Write Success", func(t *testing.T) {
 		lfr := NewLogFileRotation("folder", Daily)
 		if lfr == nil {
-			t.Errorf("NewLogFileRotation() failed")
+			t.Fatalf("NewLogFileRotation() failed")
 		}
 
 		lfr.logFile = &mockFileSystem{}
@@ -92,7 +92,7 @@ func TestLogFileRotation_Write(t *testing.T) {
 	t.Run("Write Write Error", func(t *testing.T) {
 		lfr := NewLogFileRotation("folder", Daily)
 		if lfr == nil {
-			t.Errorf("NewLogFileRotation() failed")
+			t.Fatalf("NewLogFileRotation() failed")
 		}
 
 		lfr.logFile = &mockFileSystem{
@@ -105,4 +105,3 @@ func TestLogFileRotation_Write(t *testing.T) {
 		}
 	})
 }
-
