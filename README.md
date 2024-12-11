@@ -46,12 +46,12 @@ func main() {
 
 	status := "NOT OK"
 	for i := 0; i < 10; i++ {
-		ionlog.LogOnce("Started Process") // This will be logged only once
+		ionlog.LogOnceInfo("Process Started!")  // This will be logged only once
+		ionlog.LogOnChangeDebug("count: %v", i) // Log every time i changes
 		if i == 5 {
 			status = "OK"
 		}
-
-		ionlog.LogOnChange("status: %v", status) // Log once "OK" and then log once "NOT OK"
+		ionlog.LogOnChangeInfo("status: %v", status) // Log once "NOT OK", log once "OK"
 	}
 }
 ```
