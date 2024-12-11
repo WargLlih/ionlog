@@ -2,7 +2,6 @@ package ioncore
 
 import (
 	"log/slog"
-	"time"
 
 	ionlogfile "github.com/IonicHealthUsa/ionlog/internal/logfile"
 	ionservice "github.com/IonicHealthUsa/ionlog/internal/service"
@@ -52,9 +51,10 @@ func (i *ionLogger) Status() ionservice.ServiceStatus {
 func (i *ionLogger) Stop() {
 	slog.Debug("Logger service stopping...")
 
-	time.Sleep(timeout) // Temp solution :p
-
 	i.cancel()
+
+	i.reportsSync.Wait()
+	slog.Debug("All reports have been processed")
 
 	if i.logRotateService != nil {
 		i.logRotateService.Stop()

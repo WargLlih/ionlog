@@ -16,10 +16,11 @@ import (
 )
 
 type controlFlow struct {
-	ctx    context.Context
-	cancel context.CancelFunc
-	wg     sync.WaitGroup
-	servicesRunning sync.WaitGroup
+	ctx                   context.Context
+	cancel                context.CancelFunc
+	servicesRunning       sync.WaitGroup
+	reportsSync           sync.WaitGroup
+	blockIncommingReports bool
 }
 
 type autoRotateInfo struct {
@@ -71,7 +72,7 @@ func init() {
 func newLogger() *ionLogger {
 	l := &ionLogger{}
 	l.ctx, l.cancel = context.WithCancel(context.Background())
-	l.reports = make(chan ionReport)
+	l.reports = make(chan ionReport, 100)
 	l.logEngine = slog.New(l.CreateDefaultLogHandler())
 	l.rotationPeriod = ionlogfile.NoAutoRotate
 	l.history = recordhistory.NewRecordHistory()
@@ -122,22 +123,36 @@ func (i *ionLogger) CreateDefaultLogHandler() slog.Handler {
 
 // SendReport sends the report to the Logger handler, it will wait for 10ms before returning.
 func (i *ionLogger) SendReport(r ionReport) {
+	if i.blockIncommingReports {
+		return
+	}
+	i.reportsSync.Add(1)
 	select {
 	case <-time.After(timeout):
 		slog.Warn(fmt.Sprintf("Failed to send the report (timeout=%v): %v", timeout, r))
+		i.reportsSync.Done() // Will not be processed, so decrement the counter.
 		return
 	case i.reports <- r:
 	}
 }
 
+// handleIonReports handles the reports sent to the logger
+// When the context is canceled, it will log all the reports in the queue before returning
 func (i *ionLogger) handleIonReports() {
 	for {
 		select {
 		case <-i.ctx.Done():
 			slog.Debug("Logger stopped by context")
+			i.blockIncommingReports = true
+			for len(i.reports) > 0 {
+				r := <-i.reports
+				i.reportsSync.Done()
+				i.log(r.level, r.msg, r.args...)
+			}
 			return
 
 		case r := <-i.reports:
+			i.reportsSync.Done()
 			i.log(r.level, r.msg, r.args...)
 		}
 	}
