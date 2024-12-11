@@ -43,5 +43,15 @@ func main() {
 	ionlog.Error("This log level is: %v", "error")
 	ionlog.Warn("This log level is: %v", "warn")
 	ionlog.Debug("This log level is: %v", "debug")
+
+	status := "NOT OK"
+	for i := 0; i < 10; i++ {
+		ionlog.LogOnce("Started Process") // This will be logged only once
+		if i == 5 {
+			status = "OK"
+		}
+
+		ionlog.LogOnChange("status: %v", status) // Log once "OK" and then log once "NOT OK"
+	}
 }
 ```
