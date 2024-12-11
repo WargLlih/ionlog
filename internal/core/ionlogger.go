@@ -19,6 +19,7 @@ type controlFlow struct {
 	ctx    context.Context
 	cancel context.CancelFunc
 	wg     sync.WaitGroup
+	servicesRunning sync.WaitGroup
 }
 
 type autoRotateInfo struct {
