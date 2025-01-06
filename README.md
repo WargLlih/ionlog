@@ -39,19 +39,24 @@ func main() {
 	defer ionlog.Stop()
 
 	// output: {"time":"2024-12-06T20:59:47.252944832-03:00","level":"INFO","msg":"This log level is: info","computer-id":"1234","package":"main","function":"main","file":"main.go","line":38}
-	ionlog.Info("This log level is: %v", "info")
-	ionlog.Error("This log level is: %v", "error")
-	ionlog.Warn("This log level is: %v", "warn")
-	ionlog.Debug("This log level is: %v", "debug")
+	ionlog.Infof("This log level is: %v", "info")
+	ionlog.Errorf("This log level is: %v", "error")
+	ionlog.Warnf("This log level is: %v", "warn")
+	ionlog.Debugf("This log level is: %v", "debug")
+
+	ionlog.Info("This log level is a simple info log")
+	ionlog.Error("This log level is a simple error log")
+	ionlog.Warn("This log level is a simple warn log")
+	ionlog.Debug("This log level is a simple debug log")
 
 	status := "NOT OK"
 	for i := 0; i < 10; i++ {
-		ionlog.LogOnceInfo("Process Started!")  // This will be logged only once
-		ionlog.LogOnChangeDebug("count: %v", i) // Log every time i changes
+		ionlog.LogOnceInfo("Process Started!")   // This will be logged only once
+		ionlog.LogOnChangeDebugf("count: %v", i) // Log every time i changes
 		if i == 5 {
 			status = "OK"
 		}
-		ionlog.LogOnChangeInfo("status: %v", status) // Log once "NOT OK", log once "OK"
+		ionlog.LogOnChangeInfof("status: %v", status) // Log once "NOT OK", log once "OK"
 	}
 }
 ```
