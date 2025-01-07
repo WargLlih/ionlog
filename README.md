@@ -83,20 +83,36 @@ WithLogFileRotation() configures automatic log file management.
 - Rotation period set to daily
 
 # Logging Methods:
-Standard log levels: Info(), Error(), Warn(), Debug();  
+Standard log levels:
+- Infof(msg, args)
+- Errorf(msg, args)
+- Warnf(msg, args)
+- Debugf(msg, args)
+- Info(msg)
+- Error(msg)
+- Warn(msg)
+- Debug(msg)
 Special logging methods:  
 
 Logs a message only once:
-- LogOnceInfo()
-- LogOnceError()
-- LogOnceWarn()
-- LogOnceDebug()
+- LogOnceInfof(msg, args)
+- LogOnceErrorf(msg, args)
+- LogOnceWarnf(msg, args)
+- LogOnceDebugf(msg, args)
+- LogOnceInfo(msg)
+- LogOnceError(msg)
+- LogOnceWarn(msg)
+- LogOnceDebug(msg)
 
 Logs when the message changes:
-- LogOnChangeInfo()
-- LogOnChangeError()
-- LogOnChangeWarn()
-- LogOnChangeDebug()
+- LogOnChangeInfof(msg, args)
+- LogOnChangeErrorf(msg, args)
+- LogOnChangeWarnf(msg, args)
+- LogOnChangeDebugf(msg, args)
+- LogOnChangeInfo(msg)
+- LogOnChangeError(msg)
+- LogOnChangeWarn(msg)
+- LogOnChangeDebug(msg)
 
 # Lifecycle Management:
 - Start() initializes the logger
