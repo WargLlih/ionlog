@@ -26,10 +26,10 @@ func main() {
 			// your custom fields
 		}),
 
-		// (Optional) WithLogFileRotation sets the log file rotation period and the folder where the log files will be stored.
-		// This is a internal log file rotation system, when optionally used, it will append the log file to the targets, and
-		// will rotate it automatically.
-		ionlog.WithLogFileRotation("logs", ionlog.Daily),
+		// (Optional) WithLogFileRotation enables log file rotation, specifying the directory where log files will be stored, the maximum size of the log folder in bytes, and the rotation frequency.
+		// This internal log rotation system appends the log file to the specified targets and automatically rotates logs based on the provided configuration,
+		// ensuring the total size of the log folder does not exceed the specified maximum (e.g., 10MB in this case).
+		ionlog.WithLogFileRotation("logs", 10*ionlog.Mebibyte, ionlog.Daily),
 	)
 
 	// Start the logger service

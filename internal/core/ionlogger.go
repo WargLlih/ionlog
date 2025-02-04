@@ -27,6 +27,7 @@ type autoRotateInfo struct {
 	logRotateService ionlogfile.ILogFileRotation
 	rotationPeriod   ionlogfile.PeriodicRotation
 	folder           string
+	maxFolderSize    uint
 }
 
 type ionLogger struct {
@@ -47,6 +48,7 @@ type IIonLogger interface {
 
 	SetRotationPeriod(period ionlogfile.PeriodicRotation)
 	SetFolder(folder string)
+	SetFolderMaxSize(folderMaxSize uint)
 
 	LogEngine() *slog.Logger
 	SetLogEngine(handler *slog.Logger)
@@ -83,6 +85,10 @@ func newLogger() *ionLogger {
 // Logger returns the logger instance
 func Logger() IIonLogger {
 	return logger
+}
+
+func (i *ionLogger) SetFolderMaxSize(folderMaxSize uint) {
+	i.autoRotateInfo.maxFolderSize = folderMaxSize
 }
 
 func (i *ionLogger) SetRotationPeriod(period ionlogfile.PeriodicRotation) {

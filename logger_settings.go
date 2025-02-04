@@ -52,10 +52,11 @@ func WithStaticFields(attrs map[string]string) customAttrs {
 	}
 }
 
-// WithLogFileRotation sets the log file rotation period and the folder where the log files will be stored.
-func WithLogFileRotation(folder string, period ionlogfile.PeriodicRotation) customAttrs {
+// WithLogFileRotation enables log file rotation, specifying the directory where log files will be stored, the maximum size of the log folder in bytes, and the rotation frequency.
+func WithLogFileRotation(folder string, folderMaxSize uint, period ionlogfile.PeriodicRotation) customAttrs {
 	return func(i ioncore.IIonLogger) {
 		i.SetRotationPeriod(period)
 		i.SetFolder(folder)
+		i.SetFolderMaxSize(folderMaxSize)
 	}
 }
