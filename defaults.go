@@ -10,7 +10,3 @@ import (
 func DefaultOutput() io.Writer {
 	return ioncore.DefaultOutput
 }
-
-func DefaultFile() io.Writer {
-	return nil
-}

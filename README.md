@@ -5,7 +5,7 @@
 package main
 
 import (
-	"github.com/IonicHealthUsa/ionlog/pkg/ionlog"
+	"github.com/IonicHealthUsa/ionlog"
 )
 
 func main() {
