@@ -1,4 +1,4 @@
-package recordhistory
+package memory
 
 import "testing"
 
@@ -26,7 +26,7 @@ func TestGenHash(t *testing.T) {
 func TestAddRecord(t *testing.T) {
 	t.Run("Simple Add", func(t *testing.T) {
 		r := NewRecordHistory()
-		err := r.AddRecord(1, "test", logOnce)
+		err := r.AddRecord(1, "test", LogOnce)
 		if err != nil {
 			t.Errorf("AddRecord() failed")
 		}
@@ -34,12 +34,12 @@ func TestAddRecord(t *testing.T) {
 
 	t.Run("Collision Check", func(t *testing.T) {
 		r := NewRecordHistory()
-		err := r.AddRecord(1, "test", logOnce)
+		err := r.AddRecord(1, "test", LogOnce)
 		if err != nil {
 			t.Errorf("AddRecord() failed")
 		}
 
-		err = r.AddRecord(1, "test", logOnce)
+		err = r.AddRecord(1, "test", LogOnce)
 		if err != ErrRecordIDCollision {
 			t.Errorf("AddRecord() failed; Expected collision error")
 		}
@@ -50,7 +50,7 @@ func TestRemoveRecord(t *testing.T) {
 	t.Run("Simple Remove", func(t *testing.T) {
 		id := uint64(1)
 		r := NewRecordHistory()
-		r.AddRecord(id, "test", logOnce)
+		r.AddRecord(id, "test", LogOnce)
 
 		if r.GetRecord(id) == nil {
 			t.Errorf("Test preset failed")
@@ -67,7 +67,7 @@ func TestRemoveRecord(t *testing.T) {
 func TestGetRecord(t *testing.T) {
 	t.Run("GetRecord", func(t *testing.T) {
 		r := NewRecordHistory()
-		r.AddRecord(1, "", logOnce)
+		r.AddRecord(1, "", LogOnce)
 		if r.GetRecord(1) == nil {
 			t.Errorf("GetRecord() failed")
 		}
@@ -75,10 +75,10 @@ func TestGetRecord(t *testing.T) {
 
 	t.Run("GetRecord instance check (pointer)", func(t *testing.T) {
 		r := NewRecordHistory()
-		r.AddRecord(1, "", logOnce)
+		r.AddRecord(1, "", LogOnce)
 		rec := r.GetRecord(1)
-		rec.Mode = logOnChange
-		if r.GetRecord(1).Mode != logOnChange {
+		rec.Mode = LogOnChange
+		if r.GetRecord(1).Mode != LogOnChange {
 			t.Errorf("GetRecord() failed; Expected pointer instance")
 		}
 	})

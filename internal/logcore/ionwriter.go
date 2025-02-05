@@ -1,4 +1,4 @@
-package ioncore
+package logcore
 
 import (
 	"fmt"

@@ -1,6 +1,6 @@
 // Package ioncore provides the core functionalities of the logger.
 // It is responsible for handling the logger service, the log writer, and the log engine.
-package ioncore
+package logcore
 
 import (
 	"context"
@@ -10,9 +10,9 @@ import (
 	"sync"
 	"time"
 
-	ionlogfile "github.com/IonicHealthUsa/ionlog/internal/logfile"
-	recordhistory "github.com/IonicHealthUsa/ionlog/internal/record_history"
-	ionservice "github.com/IonicHealthUsa/ionlog/internal/service"
+	"github.com/IonicHealthUsa/ionlog/internal/infrastructure/memory"
+	"github.com/IonicHealthUsa/ionlog/internal/interfaces"
+	"github.com/IonicHealthUsa/ionlog/internal/logrotation"
 )
 
 type controlFlow struct {
@@ -24,8 +24,8 @@ type controlFlow struct {
 }
 
 type autoRotateInfo struct {
-	logRotateService ionlogfile.ILogFileRotation
-	rotationPeriod   ionlogfile.PeriodicRotation
+	logRotateService logrotation.ILogFileRotation
+	rotationPeriod   logrotation.PeriodicRotation
 	folder           string
 	maxFolderSize    uint
 }
@@ -34,19 +34,19 @@ type ionLogger struct {
 	controlFlow
 	autoRotateInfo
 
-	history       recordhistory.IRecordHistory
+	history       memory.IRecordHistory
 	logEngine     *slog.Logger
 	writerHandler ionWriter
 	reports       chan ionReport
-	serviceStatus ionservice.ServiceStatus
+	serviceStatus interfaces.ServiceStatus
 }
 
 type IIonLogger interface {
-	ionservice.IService
+	interfaces.IService
 
-	History() recordhistory.IRecordHistory
+	History() memory.IRecordHistory
 
-	SetRotationPeriod(period ionlogfile.PeriodicRotation)
+	SetRotationPeriod(period logrotation.PeriodicRotation)
 	SetFolder(folder string)
 	SetFolderMaxSize(folderMaxSize uint)
 
@@ -74,10 +74,10 @@ func init() {
 func newLogger() *ionLogger {
 	l := &ionLogger{}
 	l.ctx, l.cancel = context.WithCancel(context.Background())
-	l.reports = make(chan ionReport, 100)
+	l.reports = make(chan ionReport, 10000)
 	l.logEngine = slog.New(l.CreateDefaultLogHandler())
-	l.rotationPeriod = ionlogfile.NoAutoRotate
-	l.history = recordhistory.NewRecordHistory()
+	l.rotationPeriod = logrotation.NoAutoRotate
+	l.history = memory.NewRecordHistory()
 
 	return l
 }
@@ -91,11 +91,11 @@ func (i *ionLogger) SetFolderMaxSize(folderMaxSize uint) {
 	i.autoRotateInfo.maxFolderSize = folderMaxSize
 }
 
-func (i *ionLogger) SetRotationPeriod(period ionlogfile.PeriodicRotation) {
+func (i *ionLogger) SetRotationPeriod(period logrotation.PeriodicRotation) {
 	i.rotationPeriod = period
 }
 
-func (i *ionLogger) History() recordhistory.IRecordHistory {
+func (i *ionLogger) History() memory.IRecordHistory {
 	return i.history
 }
 

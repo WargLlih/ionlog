@@ -1,10 +1,10 @@
-package ioncore
+package logcore
 
 import (
 	"log/slog"
 
-	ionlogfile "github.com/IonicHealthUsa/ionlog/internal/logfile"
-	ionservice "github.com/IonicHealthUsa/ionlog/internal/service"
+	ionservice "github.com/IonicHealthUsa/ionlog/internal/interfaces"
+	"github.com/IonicHealthUsa/ionlog/internal/logrotation"
 )
 
 // Start starts the logger service, it blocks until the service is stopped
@@ -13,8 +13,8 @@ func (i *ionLogger) Start() error {
 	defer func() { i.serviceStatus = ionservice.Stopped }()
 
 	// user has chosen to auto rotate the log file
-	if i.rotationPeriod != ionlogfile.NoAutoRotate {
-		i.logRotateService = ionlogfile.NewLogFileRotation(i.folder, i.rotationPeriod)
+	if i.rotationPeriod != logrotation.NoAutoRotate {
+		i.logRotateService = logrotation.NewLogFileRotation(i.folder, i.rotationPeriod)
 
 		// logRotateService is manages a file, so it is a target...
 		i.SetTargets(append(i.Targets(), i.logRotateService)...)

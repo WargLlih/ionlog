@@ -1,4 +1,4 @@
-package ionservice
+package interfaces
 
 type IService interface {
 	Status() ServiceStatus

@@ -1,6 +1,6 @@
-// Package ionlogfile provides a log file rotation service.
+// Package logrotaion provides a log file rotation service.
 // It is responsible for managing the log file, creating new log files, and rotating the log files.
-package ionlogfile
+package logrotation
 
 import (
 	"context"
@@ -15,24 +15,25 @@ import (
 	"sync"
 	"time"
 
-	ionservice "github.com/IonicHealthUsa/ionlog/internal/service"
+	"github.com/IonicHealthUsa/ionlog/internal/infrastructure/filesystem"
+	"github.com/IonicHealthUsa/ionlog/internal/interfaces"
 )
 
 const logFilePattern = "logfile-%s.log"
 
 type logFileRotation struct {
-	filesystem
+	filesystem.Filesystem
 	logFile       io.WriteCloser
 	writeMutex    sync.Mutex
 	ctx           context.Context
 	cancel        context.CancelFunc
-	serviceStatus ionservice.ServiceStatus
+	serviceStatus interfaces.ServiceStatus
 	folder        string
 	rotation      PeriodicRotation
 }
 
 type ILogFileRotation interface {
-	ionservice.IService
+	interfaces.IService
 	io.Writer
 	BlockWrite()
 	UnblockWrite()
@@ -43,7 +44,7 @@ var _ ILogFileRotation = &logFileRotation{}
 func NewLogFileRotation(folder string, rotation PeriodicRotation) *logFileRotation {
 	c, cancel := context.WithCancel(context.Background())
 	return &logFileRotation{
-		filesystem: newFileSystem(
+		Filesystem: filesystem.NewFileSystem(
 			os.Stat,
 			os.Mkdir,
 			os.ReadDir,
@@ -143,7 +144,7 @@ func (l *logFileRotation) getActualFile() (*os.File, error) {
 		}
 
 		// File doesn't need to be rotated, open the file
-		actualFile, err = l.openFile(
+		actualFile, err = l.OpenFile(
 			filepath.Join(l.folder, mostRecent),
 			os.O_WRONLY|os.O_APPEND,
 			0644,
@@ -156,7 +157,7 @@ func (l *logFileRotation) getActualFile() (*os.File, error) {
 		return actualFile, nil
 
 	} else {
-		if err := l.mkdir(l.folder, 0755); err != nil {
+		if err := l.Mkdir(l.folder, 0755); err != nil {
 			slog.Debug(err.Error())
 			return nil, ErrCouldNotCreateFolder
 		}
@@ -175,7 +176,7 @@ func (l *logFileRotation) getActualFile() (*os.File, error) {
 // false if it doesn't exist and an error if it couldn't check the folder status.
 func (l *logFileRotation) checkFolder(folder string) (bool, error) {
 	// Check if folder exists
-	_, err := l.stat(folder)
+	_, err := l.Stat(folder)
 
 	if err == nil {
 		return true, nil
@@ -192,7 +193,7 @@ func (l *logFileRotation) checkFolder(folder string) (bool, error) {
 // getAllfiles gets all the files in the folder.
 // It returns a list of filenames and an error if it couldn't read the folder.
 func (l *logFileRotation) getAllfiles(folder string) ([]string, error) {
-	files, err := l.readDir(folder)
+	files, err := l.ReadDir(folder)
 	if err != nil {
 		slog.Debug(err.Error())
 		return nil, ErrFailedToReadFolder
@@ -220,7 +221,7 @@ func (l *logFileRotation) getAllfiles(folder string) ([]string, error) {
 // createFileInFolder creates a new log file in the specified folder.
 func (l *logFileRotation) createFileInFolder(filename string) (*os.File, error) {
 	filePath := filepath.Join(l.folder, filename)
-	return l.openFile(filePath, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+	return l.OpenFile(filePath, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
 }
 
 // getMostRecentLogFile gets the most recent log file from the list of files.

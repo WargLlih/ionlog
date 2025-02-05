@@ -1,4 +1,4 @@
-package ionlogfile
+package logrotation
 
 import "errors"
 

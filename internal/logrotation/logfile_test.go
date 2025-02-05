@@ -1,4 +1,4 @@
-package ionlogfile
+package logrotation
 
 import (
 	"io"
@@ -12,20 +12,20 @@ func TestNewLogFileRotation(t *testing.T) {
 			t.Fatalf("NewLogFileRotation() failed")
 		}
 
-		if lfr.filesystem.stat == nil {
-			t.Errorf("stat function is nil")
+		if lfr.Filesystem.Stat == nil {
+			t.Errorf("Stat function is nil")
 		}
-		if lfr.filesystem.mkdir == nil {
-			t.Errorf("mkdir function is nil")
+		if lfr.Filesystem.Mkdir == nil {
+			t.Errorf("Mkdir function is nil")
 		}
-		if lfr.filesystem.readDir == nil {
-			t.Errorf("readDir function is nil")
+		if lfr.Filesystem.ReadDir == nil {
+			t.Errorf("ReadDir function is nil")
 		}
-		if lfr.filesystem.isNotExist == nil {
-			t.Errorf("isNotExist function is nil")
+		if lfr.Filesystem.IsNotExist == nil {
+			t.Errorf("IsNotExist function is nil")
 		}
-		if lfr.filesystem.openFile == nil {
-			t.Errorf("openFile function is nil")
+		if lfr.Filesystem.OpenFile == nil {
+			t.Errorf("OpenFile function is nil")
 		}
 
 		if lfr.ctx == nil {

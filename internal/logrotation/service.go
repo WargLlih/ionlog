@@ -1,17 +1,17 @@
-package ionlogfile
+package logrotation
 
 import (
 	"fmt"
 	"log/slog"
 	"time"
 
-	ionservice "github.com/IonicHealthUsa/ionlog/internal/service"
+	"github.com/IonicHealthUsa/ionlog/internal/interfaces"
 )
 
 // Start starts the log file rotation service. It blocks until the service is stopped.
 func (l *logFileRotation) Start() error {
-	l.serviceStatus = ionservice.Running
-	defer func() { l.serviceStatus = ionservice.Stopped }()
+	l.serviceStatus = interfaces.Running
+	defer func() { l.serviceStatus = interfaces.Stopped }()
 
 	if err := validateRotation(l.rotation); err != nil {
 		return err
@@ -85,6 +85,6 @@ func (l *logFileRotation) Stop() {
 }
 
 // Status returns the status of the log file rotation service.
-func (l *logFileRotation) Status() ionservice.ServiceStatus {
+func (l *logFileRotation) Status() interfaces.ServiceStatus {
 	return l.serviceStatus
 }

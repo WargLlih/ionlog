@@ -1,6 +1,6 @@
-// Package recordhistory provides a way to keep track of the log history.
+// Package memory provides a way to keep track of the log history.
 // It allows custom logging modes, such as logOnce and logOnChange.
-package recordhistory
+package memory
 
 import (
 	"log/slog"
@@ -26,8 +26,8 @@ type IRecordHistory interface {
 }
 
 const (
-	logOnce RecordMode = iota
-	logOnChange
+	LogOnce RecordMode = iota
+	LogOnChange
 )
 
 func NewRecordHistory() IRecordHistory {
