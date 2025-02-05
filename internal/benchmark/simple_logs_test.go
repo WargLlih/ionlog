@@ -19,6 +19,6 @@ func BenchmarkSimpleLogs(b *testing.B) {
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		ionlog.Infof("This log test: %v", i)
+		ionlog.Info("log test")
 	}
 }
