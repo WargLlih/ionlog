@@ -29,6 +29,7 @@ type logFileRotation struct {
 	cancel        context.CancelFunc
 	serviceStatus interfaces.ServiceStatus
 	folder        string
+	maxFolderSize uint
 	rotation      PeriodicRotation
 }
 
@@ -41,7 +42,7 @@ type ILogFileRotation interface {
 
 var _ ILogFileRotation = &logFileRotation{}
 
-func NewLogFileRotation(folder string, rotation PeriodicRotation) *logFileRotation {
+func NewLogFileRotation(folder string, maxFolderSize uint, rotation PeriodicRotation) *logFileRotation {
 	c, cancel := context.WithCancel(context.Background())
 	return &logFileRotation{
 		Filesystem: filesystem.NewFileSystem(
@@ -50,11 +51,13 @@ func NewLogFileRotation(folder string, rotation PeriodicRotation) *logFileRotati
 			os.ReadDir,
 			os.IsNotExist,
 			os.OpenFile,
+			os.Remove,
 		),
-		ctx:      c,
-		cancel:   cancel,
-		folder:   folder,
-		rotation: rotation,
+		ctx:           c,
+		cancel:        cancel,
+		folder:        folder,
+		maxFolderSize: maxFolderSize,
+		rotation:      rotation,
 	}
 }
 

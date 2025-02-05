@@ -14,7 +14,7 @@ func (i *ionLogger) Start() error {
 
 	// user has chosen to auto rotate the log file
 	if i.rotationPeriod != logrotation.NoAutoRotate {
-		i.logRotateService = logrotation.NewLogFileRotation(i.folder, i.rotationPeriod)
+		i.logRotateService = logrotation.NewLogFileRotation(i.folder, i.maxFolderSize, i.rotationPeriod)
 
 		// logRotateService is manages a file, so it is a target...
 		i.SetTargets(append(i.Targets(), i.logRotateService)...)

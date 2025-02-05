@@ -27,9 +27,11 @@ func (l *logFileRotation) Start() error {
 		return err
 	}
 
-	var ticker *time.Ticker
+	// check folder size
+	go l.checkFolderSize()
 
 	// every ticker check if the log file needs to be rotated
+	var ticker *time.Ticker
 	switch l.rotation {
 	case Daily:
 		ticker = time.NewTicker(8 * time.Hour) // every 8 hours

@@ -8,6 +8,7 @@ type Filesystem struct {
 	ReadDir    func(string) ([]os.DirEntry, error)
 	IsNotExist func(error) bool
 	OpenFile   func(name string, flag int, perm os.FileMode) (*os.File, error)
+	RemoveFile func(name string) error
 }
 
 func NewFileSystem(
@@ -16,6 +17,7 @@ func NewFileSystem(
 	readDir func(string) ([]os.DirEntry, error),
 	isNotExist func(error) bool,
 	openFile func(name string, flag int, perm os.FileMode) (*os.File, error),
+	removeFile func(name string) error,
 ) Filesystem {
 	return Filesystem{
 		Stat:       stat,
@@ -23,5 +25,6 @@ func NewFileSystem(
 		ReadDir:    readDir,
 		IsNotExist: isNotExist,
 		OpenFile:   openFile,
+		RemoveFile: removeFile,
 	}
 }

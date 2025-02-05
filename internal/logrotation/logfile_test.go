@@ -5,9 +5,11 @@ import (
 	"testing"
 )
 
+var size uint = 10 * 1024
+
 func TestNewLogFileRotation(t *testing.T) {
 	t.Run("New Log File Rotation", func(t *testing.T) {
-		lfr := NewLogFileRotation("folder", Daily)
+		lfr := NewLogFileRotation("folder", size, Daily)
 		if lfr == nil {
 			t.Fatalf("NewLogFileRotation() failed")
 		}
@@ -62,7 +64,7 @@ func (mfs *mockFileSystem) Close() error {
 
 func TestLogFileRotation_Write(t *testing.T) {
 	t.Run("Write No File", func(t *testing.T) {
-		lfr := NewLogFileRotation("folder", Daily)
+		lfr := NewLogFileRotation("folder", size, Daily)
 		if lfr == nil {
 			t.Fatalf("NewLogFileRotation() failed")
 		}
@@ -76,7 +78,7 @@ func TestLogFileRotation_Write(t *testing.T) {
 	})
 
 	t.Run("Write Success", func(t *testing.T) {
-		lfr := NewLogFileRotation("folder", Daily)
+		lfr := NewLogFileRotation("folder", size, Daily)
 		if lfr == nil {
 			t.Fatalf("NewLogFileRotation() failed")
 		}
@@ -90,7 +92,7 @@ func TestLogFileRotation_Write(t *testing.T) {
 	})
 
 	t.Run("Write Write Error", func(t *testing.T) {
-		lfr := NewLogFileRotation("folder", Daily)
+		lfr := NewLogFileRotation("folder", size, Daily)
 		if lfr == nil {
 			t.Fatalf("NewLogFileRotation() failed")
 		}
