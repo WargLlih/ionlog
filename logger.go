@@ -4,36 +4,36 @@ import (
 	"fmt"
 	"log/slog"
 
-	ioncore "github.com/IonicHealthUsa/ionlog/internal/core"
-	recordhistory "github.com/IonicHealthUsa/ionlog/internal/record_history"
+	"github.com/IonicHealthUsa/ionlog/internal/logcore"
+	"github.com/IonicHealthUsa/ionlog/internal/usecases"
 )
 
 func Start() {
-	ioncore.Logger().Start()
+	logcore.Logger().Start()
 }
 
 func Stop() {
-	ioncore.Logger().Stop()
+	logcore.Logger().Stop()
 }
 
 // Info logs a message with level info.
 func Info(msg any) {
-	ioncore.Logger().SendReport(ioncore.NewIonReport(slog.LevelInfo, fmt.Sprintf("%v", msg), ioncore.GetRecordInformation()))
+	logcore.Logger().SendReport(logcore.NewIonReport(slog.LevelInfo, fmt.Sprintf("%v", msg), logcore.GetRecordInformation()))
 }
 
 // Error logs a message with level error.
 func Error(msg any) {
-	ioncore.Logger().SendReport(ioncore.NewIonReport(slog.LevelError, fmt.Sprintf("%v", msg), ioncore.GetRecordInformation()))
+	logcore.Logger().SendReport(logcore.NewIonReport(slog.LevelError, fmt.Sprintf("%v", msg), logcore.GetRecordInformation()))
 }
 
 // Warn logs a message with level warn.
 func Warn(msg any) {
-	ioncore.Logger().SendReport(ioncore.NewIonReport(slog.LevelWarn, fmt.Sprintf("%v", msg), ioncore.GetRecordInformation()))
+	logcore.Logger().SendReport(logcore.NewIonReport(slog.LevelWarn, fmt.Sprintf("%v", msg), logcore.GetRecordInformation()))
 }
 
 // Debug logs a message with level debug.
 func Debug(msg any) {
-	ioncore.Logger().SendReport(ioncore.NewIonReport(slog.LevelDebug, fmt.Sprintf("%v", msg), ioncore.GetRecordInformation()))
+	logcore.Logger().SendReport(logcore.NewIonReport(slog.LevelDebug, fmt.Sprintf("%v", msg), logcore.GetRecordInformation()))
 }
 
 // LogOnceInfo logs a message with level info only once.
@@ -78,22 +78,22 @@ func LogOnChangeDebug(msg any) {
 
 // Infof logs a message with level info. Arguments are handled in the manner of fmt.Printf.
 func Infof(msg string, args ...any) {
-	ioncore.Logger().SendReport(ioncore.NewIonReport(slog.LevelInfo, fmt.Sprintf(msg, args...), ioncore.GetRecordInformation()))
+	logcore.Logger().SendReport(logcore.NewIonReport(slog.LevelInfo, fmt.Sprintf(msg, args...), logcore.GetRecordInformation()))
 }
 
 // Errorf logs a message with level error. Arguments are handled in the manner of fmt.Printf.
 func Errorf(msg string, args ...any) {
-	ioncore.Logger().SendReport(ioncore.NewIonReport(slog.LevelError, fmt.Sprintf(msg, args...), ioncore.GetRecordInformation()))
+	logcore.Logger().SendReport(logcore.NewIonReport(slog.LevelError, fmt.Sprintf(msg, args...), logcore.GetRecordInformation()))
 }
 
 // Warnf logs a message with level warn. Arguments are handled in the manner of fmt.Printf.
 func Warnf(msg string, args ...any) {
-	ioncore.Logger().SendReport(ioncore.NewIonReport(slog.LevelWarn, fmt.Sprintf(msg, args...), ioncore.GetRecordInformation()))
+	logcore.Logger().SendReport(logcore.NewIonReport(slog.LevelWarn, fmt.Sprintf(msg, args...), logcore.GetRecordInformation()))
 }
 
 // Debugf logs a message with level debug. Arguments are handled in the manner of fmt.Printf.
 func Debugf(msg string, args ...any) {
-	ioncore.Logger().SendReport(ioncore.NewIonReport(slog.LevelDebug, fmt.Sprintf(msg, args...), ioncore.GetRecordInformation()))
+	logcore.Logger().SendReport(logcore.NewIonReport(slog.LevelDebug, fmt.Sprintf(msg, args...), logcore.GetRecordInformation()))
 }
 
 // LogOnceInfof logs a message with level info only once.
@@ -148,14 +148,14 @@ func LogOnChangeDebugf(msg string, args ...any) {
 // Each function call will log the message only once.
 // Avoid using it in a sintax like this: LogOnce("Logging..."); LogOnce("Logging...")
 func logOnce(level slog.Level, recordMsg string) {
-	callInfo := ioncore.GetRecordInformation()
+	callInfo := logcore.GetRecordInformation()
 	pkg := string(callInfo[0].(slog.Attr).Value.String())
 	function := string(callInfo[1].(slog.Attr).Value.String())
 	file := string(callInfo[2].(slog.Attr).Value.String())
 	line := int(callInfo[3].(slog.Attr).Value.Int64())
 
-	proceed := recordhistory.LogOnce(
-		ioncore.Logger().History(),
+	proceed := usecases.LogOnce(
+		logcore.Logger().History(),
 		pkg,
 		function,
 		file,
@@ -164,7 +164,7 @@ func logOnce(level slog.Level, recordMsg string) {
 	)
 
 	if proceed {
-		ioncore.Logger().SendReport(ioncore.NewIonReport(level, recordMsg, callInfo))
+		logcore.Logger().SendReport(logcore.NewIonReport(level, recordMsg, callInfo))
 	}
 }
 
@@ -172,14 +172,14 @@ func logOnce(level slog.Level, recordMsg string) {
 // Each function call will log the message only when it changes.
 // Avoid using it in a sintax like this: LogOnChange("Logging..."); LogOnChange("Logging...")
 func logOnChange(level slog.Level, recordMsg string) {
-	callInfo := ioncore.GetRecordInformation()
+	callInfo := logcore.GetRecordInformation()
 	pkg := string(callInfo[0].(slog.Attr).Value.String())
 	function := string(callInfo[1].(slog.Attr).Value.String())
 	file := string(callInfo[2].(slog.Attr).Value.String())
 	line := int(callInfo[3].(slog.Attr).Value.Int64())
 
-	proceed := recordhistory.LogOnChange(
-		ioncore.Logger().History(),
+	proceed := usecases.LogOnChange(
+		logcore.Logger().History(),
 		pkg,
 		function,
 		file,
@@ -188,6 +188,6 @@ func logOnChange(level slog.Level, recordMsg string) {
 	)
 
 	if proceed {
-		ioncore.Logger().SendReport(ioncore.NewIonReport(level, recordMsg, callInfo))
+		logcore.Logger().SendReport(logcore.NewIonReport(level, recordMsg, callInfo))
 	}
 }

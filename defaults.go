@@ -3,7 +3,7 @@ package ionlog
 import (
 	"io"
 
-	ioncore "github.com/IonicHealthUsa/ionlog/internal/core"
+	ioncore "github.com/IonicHealthUsa/ionlog/internal/logcore"
 )
 
 const (
