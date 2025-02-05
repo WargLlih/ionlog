@@ -60,8 +60,8 @@ func NewLogFileRotation(folder string, rotation PeriodicRotation) *logFileRotati
 
 // Write writes the log message to the log file.
 func (l *logFileRotation) Write(p []byte) (n int, err error) {
-	l.writeMutex.Lock()
-	defer l.writeMutex.Unlock()
+	l.BlockWrite()
+	defer l.UnblockWrite()
 
 	if l.logFile == nil {
 		return 0, ErrCouldNotGetActualFile

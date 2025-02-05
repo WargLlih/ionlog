@@ -52,8 +52,8 @@ func (l *logFileRotation) Start() error {
 
 		case <-ticker.C:
 			err := func() error {
-				l.writeMutex.Lock()
-				defer l.writeMutex.Unlock()
+				l.BlockWrite()
+				defer l.UnblockWrite()
 
 				if err := l.logFile.Close(); err != nil {
 					slog.Warn(err.Error())
@@ -78,8 +78,8 @@ func (l *logFileRotation) Start() error {
 
 // Stop stops the log file rotation service.
 func (l *logFileRotation) Stop() {
-	l.writeMutex.Lock()
-	defer l.writeMutex.Unlock()
+	l.BlockWrite()
+	defer l.UnblockWrite()
 
 	l.cancel()
 }
