@@ -18,62 +18,62 @@ func Stop() {
 
 // Info logs a message with level info.
 func Info(msg any) {
-	logcore.Logger().SendReport(logcore.NewIonReport(slog.LevelInfo, fmt.Sprintf("%v", msg), logcore.GetRecordInformation()))
+	logcore.Logger().SendReport(logcore.NewIonReport(slog.LevelInfo, msg.(string), logcore.GetRecordInformation()))
 }
 
 // Error logs a message with level error.
 func Error(msg any) {
-	logcore.Logger().SendReport(logcore.NewIonReport(slog.LevelError, fmt.Sprintf("%v", msg), logcore.GetRecordInformation()))
+	logcore.Logger().SendReport(logcore.NewIonReport(slog.LevelError, msg.(string), logcore.GetRecordInformation()))
 }
 
 // Warn logs a message with level warn.
 func Warn(msg any) {
-	logcore.Logger().SendReport(logcore.NewIonReport(slog.LevelWarn, fmt.Sprintf("%v", msg), logcore.GetRecordInformation()))
+	logcore.Logger().SendReport(logcore.NewIonReport(slog.LevelWarn, msg.(string), logcore.GetRecordInformation()))
 }
 
 // Debug logs a message with level debug.
 func Debug(msg any) {
-	logcore.Logger().SendReport(logcore.NewIonReport(slog.LevelDebug, fmt.Sprintf("%v", msg), logcore.GetRecordInformation()))
+	logcore.Logger().SendReport(logcore.NewIonReport(slog.LevelDebug, msg.(string), logcore.GetRecordInformation()))
 }
 
 // LogOnceInfo logs a message with level info only once.
 func LogOnceInfo(msg any) {
-	logOnce(slog.LevelInfo, fmt.Sprintf("%v", msg))
+	logOnce(slog.LevelInfo, msg.(string))
 }
 
 // LogOnceError logs a message with level info only once.
 func LogOnceError(msg any) {
-	logOnce(slog.LevelError, fmt.Sprintf("%v", msg))
+	logOnce(slog.LevelError, msg.(string))
 }
 
 // LogOnceWarn logs a message with level warn only once.
 func LogOnceWarn(msg any) {
-	logOnce(slog.LevelWarn, fmt.Sprintf("%v", msg))
+	logOnce(slog.LevelWarn, msg.(string))
 }
 
 // LogOnceDebug logs a message with level debug only once.
 func LogOnceDebug(msg any) {
-	logOnce(slog.LevelDebug, fmt.Sprintf("%v", msg))
+	logOnce(slog.LevelDebug, msg.(string))
 }
 
 // LogOnChangeInfo logs a message with level info only when the message changes.
 func LogOnChangeInfo(msg any) {
-	logOnChange(slog.LevelInfo, fmt.Sprintf("%v", msg))
+	logOnChange(slog.LevelInfo, msg.(string))
 }
 
 // LogOnChangeError logs a message with level error only when the message changes.
 func LogOnChangeError(msg any) {
-	logOnChange(slog.LevelError, fmt.Sprintf("%v", msg))
+	logOnChange(slog.LevelError, msg.(string))
 }
 
 // LogOnChangeWarn logs a message with level warn only when the message changes.
 func LogOnChangeWarn(msg any) {
-	logOnChange(slog.LevelWarn, fmt.Sprintf("%v", msg))
+	logOnChange(slog.LevelWarn, msg.(string))
 }
 
 // LogOnChangeDebug logs a message with level debug only when the message changes.
 func LogOnChangeDebug(msg any) {
-	logOnChange(slog.LevelDebug, fmt.Sprintf("%v", msg))
+	logOnChange(slog.LevelDebug, msg.(string))
 }
 
 // Infof logs a message with level info. Arguments are handled in the manner of fmt.Printf.
