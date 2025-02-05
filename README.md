@@ -1,6 +1,34 @@
-# IonLog
+# ionlog
 
-# Usage
+A flexible and structured logging library for Go with dynamic controls.
+
+## Installation
+
+```bash
+go get github.com/IonicHealthUsa/ionlog
+```
+
+# Basic Usage
+```go
+package main
+
+import "github.com/IonicHealthUsa/ionlog"
+
+func main() {
+    ionlog.SetLogAttributes(
+        ionlog.WithTargets(ionlog.DefaultOutput()), // Log to console
+        ionlog.WithStaticFields(map[string]string{"service": "my-app"}),
+        ionlog.WithLogFileRotation("logs", 10*ionlog.Mebibyte, ionlog.Daily),
+    )
+
+    ionlog.Start()
+    defer ionlog.Stop()
+
+    ionlog.Info("Application started")
+}
+```
+
+# Advanced Usage
 ```go
 package main
 
@@ -60,68 +88,69 @@ func main() {
 	}
 }
 ```
-# Library Import and Configuration:
-The library is imported from github.com/IonicHealthUsa/ionlog/pkg/ionlog.  
-Configuration is done using SetLogAttributes() method with several options:
 
-## Log Targets:
-ionlog.WithTargets() allows setting multiple log output destinations.  
-It supports:
+# Key Features
+## Configuration Options
 
-- Default output
-- Websocket
-- File writing
-- Custom writers
+### Targets: Log to multiple destinations (console, files, websockets, custom writers).
+```go
+ionlog.WithTargets(ionlog.DefaultOutput(), myCustomWriter)
+```
 
-## Static Fields:
-WithStaticFields() adds consistent metadata to all log entries.  
-In this example, a "computer-id" field is added to every log
+### Static Fields: Add fixed fields to all logs (e.g., service name, environment).
+```go
+ionlog.WithStaticFields(map[string]string{"env": "production"})
+```
 
-## Log File Rotation:
-WithLogFileRotation() configures automatic log file management.
-- Sets log file storage location to "logs" folder
-- Rotation period set to daily
+### Log Rotation: Auto-rotate logs by size and time.
+```go
+ionlog.WithLogFileRotation("logs", 100*ionlog.Mebibyte, ionlog.Hourly)
+```
 
-# Logging Methods:
-Standard log levels:
-- Infof(msg, args)
-- Errorf(msg, args)
-- Warnf(msg, args)
-- Debugf(msg, args)
-- Info(msg)
-- Error(msg)
-- Warn(msg)
-- Debug(msg)
-Special logging methods:  
+## Logging Functions
+- Levels: Debug, Info, Warn, Error.
+```go
+ionlog.Infof("User %s logged in", "Alice")
+ionlog.Error("Connection failed")
+```
 
-Logs a message only once:
-- LogOnceInfof(msg, args)
-- LogOnceErrorf(msg, args)
-- LogOnceWarnf(msg, args)
-- LogOnceDebugf(msg, args)
-- LogOnceInfo(msg)
-- LogOnceError(msg)
-- LogOnceWarn(msg)
-- LogOnceDebug(msg)
+## Structured Output: Logs are emitted as JSON with metadata:
+```json
+{
+	"time":"2024-12-06T20:59:47.252944832-03:00",
+	"level":"INFO",
+	"msg": "User Alice logged in",
+	"service-id":"0xcafe",
+	"package":"main",
+	"function":"main",
+	"file":"main.go",
+	"line":42
+}
+```
 
-Logs when the message changes:
-- LogOnChangeInfof(msg, args)
-- LogOnChangeErrorf(msg, args)
-- LogOnChangeWarnf(msg, args)
-- LogOnChangeDebugf(msg, args)
-- LogOnChangeInfo(msg)
-- LogOnChangeError(msg)
-- LogOnChangeWarn(msg)
-- LogOnChangeDebug(msg)
+## Special Logging
 
-# Lifecycle Management:
+### Log Once: Write a message only once during execution.
+```go
+ionlog.LogOnceInfo("Initialization complete")
+```
+
+### Log on Change: Only log when the value changes.
+```go
+status := "STARTING"
+ionlog.LogOnChangeInfof("status: %s", status) // Logs once
+ionlog.LogOnChangeInfof("status: %s", status) // Will not log
+
+status = "RUNNING"
+ionlog.LogOnChangeInfof("status: %s", status) // Logs again
+ionlog.LogOnChangeInfof("status: %s", status) // Will not log
+```
+
+## Lifecycle Management:
+
 - Start() initializes the logger
-- Stop() (deferred) closes the logger when the program ends
+- Stop() closes the logger when the program ends
 
-# Log Format:
-- Produces JSON-formatted logs
-- Includes timestamp, log level, message
-- Adds static fields, package, function, file, and line information
 
 # Internal Logging system:
 - Internal logs are handled by the slog package, and outputed to the os.Stdout by default.
