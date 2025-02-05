@@ -57,7 +57,7 @@ func (l *logFileRotation) checkFolderSize() {
 
 func getOldestLogFile(files []string) (string, error) {
 	var oldestFile string
-	var oldestTime time.Time = time.Now()
+	var oldestTime = time.Now()
 
 	for _, file := range files {
 		fileTime, err := getFileDate(file)
