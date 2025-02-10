@@ -49,7 +49,7 @@ func (l *logFileRotation) checkFolderSize() {
 			slog.Debug("folder size check system stopped by context")
 			return
 
-		case <-time.After(30 * time.Minute):
+		case <-time.After(1 * time.Minute):
 			routine()
 		}
 	}
